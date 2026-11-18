@@ -135,17 +135,30 @@ When asked "is there any gap or bug in <file>", read the whole file, then check 
 
 ## 3. Check for duplicates and overlapping work before proposing anything new
 
-Before filing an issue, suggesting a design change, or claiming a gap is unaddressed:
-- Search existing issues, PRs (open and closed/merged), and discussions for the same topic
-  (`gh search issues --repo <owner>/<repo> "<keywords>" --include-prs`).
+Before filing an issue, suggesting a design change, claiming a gap is unaddressed, **or starting
+any implementation work on an existing issue**:
+
+- If working from an issue number, check that issue's own "Development"/linked-PRs section
+  (`https://api.github.com/repos/<owner>/<repo>/issues/<number>/timeline`, or just read the issue
+  page) for PRs that reference it, open or merged -- not just a keyword search. A PR can close or
+  partially address an issue without the issue itself being closed yet.
+- Separately, keyword-search issues, PRs (open and closed/merged), and discussions for the same
+  topic (`gh search issues --repo <owner>/<repo> "<keywords>" --include-prs`, or
+  `https://api.github.com/search/issues?q=repo:<owner>/<repo>+<keywords>`), since related work
+  doesn't always reference the issue number.
+- Before touching a specific file/section, check both:
+  - Open PRs that touch it, and look at their hunks (`gh pr diff <n> --name-only`, then the `@@`
+    lines). If an open PR moves or rewrites the section you would edit, route your fix to a
+    comment on that PR instead of editing it yourself -- an open PR that already makes the same
+    change is the most common finding of a review, so check for it early. If a small conflict
+    cannot be avoided, say so in the PR description.
+  - Merged PR history for that file (`git log --oneline -- <file>`, or its "History" on GitHub). A
+    merged PR can already have fixed or changed the exact content you are about to work on without
+    closing the issue you are tracking, or without mentioning it at all.
 - If something related already exists, say so and link it, rather than duplicating it. If your
   finding is a genuine addition to an existing thread, say exactly what's new versus what's
-  already covered. An open PR that already makes the same change is the most common finding of a
-  review; check for it early.
-- Before editing a file, list the open PRs that touch it and look at their hunks
-  (`gh pr diff <n> --name-only`, then the `@@` lines). If an open PR moves or rewrites a section,
-  route fixes for that section to a comment on that PR instead of editing it yourself. If a small
-  conflict can't be avoided, say so in the PR description.
+  already covered. If a prior merged PR already changed the content you are about to edit, verify
+  your edit is based on that PR's result, not a stale pre-merge version.
 
 ## 4. For "find a small fix" or "implement this" requests
 
