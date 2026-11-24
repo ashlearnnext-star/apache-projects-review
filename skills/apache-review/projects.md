@@ -37,6 +37,16 @@ there.
 - **Useful for verifying claims:** sqlglot (the validator uses it) and DuckDB both run locally
   for SQL behavior. For other engines and BI tools, use their official docs.
 - **Converters** live in a separate repo, `apache/ossie-converters`.
+- **Pushing to the user's fork:** the `gh` login has no `workflow` scope, so GitHub refuses any push
+  (and `gh repo sync`) that brings upstream commits touching `.github/workflows/` into the fork.
+  Don't rebase an existing PR branch for that reason; add a commit on top instead (GitHub's CI tests
+  the PR merged into `main` anyway) and check `git merge-tree --write-tree upstream/main HEAD`. For a
+  new branch from upstream `main`, ask the user to click **Sync fork** on the fork's GitHub page
+  first. (Learned 2026-11-23 on #764 and #809.)
+- **Running `ost` without a global `uv`:** `pip install uv` into a scratch venv, then
+  `uv run --project ost ost -d compliance compliance/query` and `uv run --project ost pytest -q ost`.
+  To get a new case's expected output, write it with an empty `> {_|` / `|_} : string` block, run it,
+  and copy the regenerated script from `compliance/target/ost/` after checking the result by hand.
 
 ### Maintainer asks (from reviews of our PRs)
 
