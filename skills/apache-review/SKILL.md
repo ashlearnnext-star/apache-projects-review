@@ -65,6 +65,18 @@ If the target project has an entry in [projects.md](projects.md) (next to this f
 for a head start: build and test commands, PR title format, and contribution rules. Those notes are
 a snapshot. When they disagree with the repo's current files, the repo wins.
 
+**Maintainer asks.** A project entry may have a "Maintainer asks" checklist: what its reviewers asked
+for on the user's past PRs. Maintainers repeat themselves, so:
+- Before pushing a change or asking for review, run that checklist against the actual diff and report
+  each item as pass, fail (file and line) or not applicable. Fix failures first.
+- When reviewing someone else's PR there, write the review in the style the checklist records.
+- After a review arrives on one of the user's PRs, fetch every maintainer comment
+  (`gh api repos/<owner>/<repo>/pulls/<n>/comments`, `.../pulls/<n>/reviews`,
+  `.../issues/<n>/comments`; skip bots and the user's own comments). Add each new request as a
+  one-line checklist item with the PR link and date. If it is already listed, add the new PR link to
+  that item: repeated requests matter most. If the project has no entry yet, create one from the
+  maintainers' comments on the user's past PRs there.
+
 If the repo isn't checked out locally, prefer `webfetch` against the GitHub REST API
 (`https://api.github.com/repos/<owner>/<repo>/...`) and raw file URLs
 (`https://raw.githubusercontent.com/<owner>/<repo>/<branch>/<path>`) over cloning, unless the task

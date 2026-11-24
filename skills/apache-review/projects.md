@@ -38,6 +38,54 @@ there.
   for SQL behavior. For other engines and BI tools, use their official docs.
 - **Converters** live in a separate repo, `apache/ossie-converters`.
 
+### Maintainer asks (from reviews of our PRs)
+
+*Grown after every review we receive; newest evidence last. Run this list against the diff before pushing.*
+
+| Reviewer | Area they check closely |
+| --- | --- |
+| christianeu-db | Core spec vendor neutrality, normative vs non-normative text, compliance test format |
+| kayemkim | Dialect registry and validator in sync, CI against current `main` |
+| jbonofre | Converters: parser behaviour and test coverage |
+| julianhyde | `.ost` test scripts (the compliance corpus) |
+
+**Core spec stays vendor-neutral**
+- [ ] No vendor or product names (Snowflake, BigQuery, Databricks, PostgreSQL, DuckDB, MySQL, Tableau,
+      DAX, Looker, ...) and no "popular"/"major" framing in `core-spec/` text. ([#764], 2026-11-19)
+- [ ] Vendor-specific tables, notes, examples and reference links move to a non-normative file under
+      `extensions/` (e.g. `function_mappings.md`); leave one neutral pointer: "For a non-normative
+      mapping from the portable Ossie dialect to vendor dialects and expressions, see ...". ([#764])
+- [ ] Standards references (ISO/IEC 9075, SQL:2003) stay in the core spec. ([#764])
+- [ ] A spec doc that defines expressions says it covers the portable Ossie dialect and points to the
+      dialect-extension section for non-portable dialects. ([#764])
+- [ ] Scan for vendor names nobody has flagged yet (session settings, error examples): the next
+      review round catches them.
+
+**Registry and validator stay in sync**
+- [ ] A new dialect in `extensions/dialects.md` also needs its entry in `validation/validate.py`
+      (e.g. `NON_SQL_DIALECTS`): a test pins the validator's tables to the registry since #612. ([#659], 2026-10-28)
+- [ ] Rebase on current `main` and re-run CI before asking for review; runs queued before a related
+      merge can be stale. ([#659])
+- [ ] No blank line inside a markdown table (it ends the table); keep registry rows in order. ([#664])
+
+**Tests**
+- [ ] New compliance cases are `.ost` scripts, not `.sql` (paused while #501/#502 landed; `.ost` is now
+      the corpus). Check format questions with julianhyde. ([#702], 2026-11-09 and 2026-11-21)
+- [ ] Converter parser changes: tests for valid forms, invalid forms, long inputs and loading.
+      ([ossie-converters#239], approved 2026-11-19)
+
+**How maintainers write reviews here (match it when we review)**
+- Concrete reproduction first: the query or model, actual result, expected result with numbers. ([#769])
+- Mark small points "(minor)"; say what must be fixed before merge and what can be a follow-up issue
+  with its own `.ost`. "+1 on this issue" to agree instead of repeating. ([#769])
+
+[#659]: https://github.com/apache/ossie/pull/659
+[#664]: https://github.com/apache/ossie/pull/664
+[#702]: https://github.com/apache/ossie/pull/702
+[#764]: https://github.com/apache/ossie/pull/764
+[#769]: https://github.com/apache/ossie/pull/769
+[ossie-converters#239]: https://github.com/apache/ossie-converters/pull/239
+
 ---
 
 ## Apache Polaris — `apache/polaris`
