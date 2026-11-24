@@ -288,6 +288,12 @@ nothing new. Remove every word and pattern from the "Don't" list. Then ask two q
 busy maintainer read this as written by a thoughtful colleague, and would the author feel helped
 rather than corrected? If not, revise.
 
+Then, if the `humanizer` skill is available, run every draft that will be posted (comment, review,
+issue, PR title and description, commit message body) through it in embedded mode, and show the user
+the result. Keep code, commands, file paths, issue/PR numbers, quoted reviewer text and `@`-mentions
+exactly as they were. If the humanizer changes a fact, keep the fact and discard that edit. If the
+skill is not available, say so in one line and rely on the check pass above.
+
 ## 5b. Explaining an issue or PR to the user
 
 The user may not know the component involved. When they ask what an issue or PR is about, explain
