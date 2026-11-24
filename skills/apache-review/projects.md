@@ -91,7 +91,8 @@ there.
 - Names in the CTE `joined` come from two sources: grouping keys keep their select item's name
   (`item.alias_or_name`), and measure columns get `<alias>_<column>` (keys `<alias>_k` on main).
   The duplicate check covers only the generated names, so `select d.deptno as e_sal, agg(e.sum_sal)`
-  returns deptno sums (30, 100, 180) instead of salaries. (Found 2026-11-23; posted on #795.)
+  returns deptno sums (30, 100, 180) instead of salaries. (Found 2026-11-23; deliberately NOT posted:
+  contrived alias in a minimal reference tool, see "Less is more" below.)
 - Probe recipe: in a scratch worktree of upstream `main`, write a `.ost` with
   `executeExpand(<query with measures>)` next to `query(<same question on scott.* base tables>)`,
   run `ost`, and compare the rows. 17 probes on 2026-11-23 (self-joins, `joined`/`spine` aliases,
@@ -100,6 +101,22 @@ there.
 - Known "not supported yet" limits in `expander.py`, untracked as issues on purpose: measures
   through a join of a subquery, plain aggregates in a join, `GROUP BY ALL`/`ROLLUP`/`CUBE`/
   `GROUPING SETS` in a join, field expressions. Don't open issues for them; umbrella is #707.
+
+**"Less is more" for `ost` and the expander (julianhyde, the author of `ost`)**
+- On [#737] julianhyde wrote that he had documented invalid UTF-8 under a man-page style "BUGS" section
+  on purpose, and: "an agent will spot every minor flaw, that flaw needs to be reviewed and discussed,
+  and over time the code, tests and specification become bloated ... Less is more." (2026-11-19; it
+  followed our column-number suggestion on that PR.)
+- So for `ost` and the expander: do not raise, review or "fix" minor flaws. That means contrived edge
+  cases, error-message polish, and anything listed under BUGS or reported as "not supported yet".
+  Raise something only when real users or a real compliance case hit it (as #809 did: chained CTEs
+  are ordinary SQL, and case A13 needed them).
+- Before suggesting any change, check whether the current behaviour is intentional: a BUGS section,
+  a "not supported yet" message, or a design comment by julianhyde. If it is, leave it.
+- Findings from systematic probing are the riskiest kind to post here: keep them in notes unless a
+  maintainer asks, or a real case depends on them.
+
+[#737]: https://github.com/apache/ossie/pull/737
 
 **Lessons from our own PRs**
 - Before opening a PR that closes an issue, check the issue for open PRs: #764 overlapped #644

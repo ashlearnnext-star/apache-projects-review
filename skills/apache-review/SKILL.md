@@ -199,6 +199,10 @@ row in a LEFT JOIN, a value shared across groups so double counting shows). A cl
 - A deliberate "not supported yet" limit that nobody has asked for is not worth a standalone issue.
   Keep the repro; mention it on the project's umbrella issue when it becomes relevant, or when the
   user offers to implement it.
+- Before posting a finding from systematic probing (an edge case nobody hit), check how the project
+  feels about polish. Some maintainers say plainly that agent-found minor flaws bloat their code;
+  their project entry records it. When in doubt, keep the finding in notes and post only what real
+  users or real test cases hit.
 - Skip a review that would add nothing: a maintainer already found the blocking problem, or the PR
   is a spec-only change that does what it says and is under discussion elsewhere. Tell the user
   why in one line and move on.
