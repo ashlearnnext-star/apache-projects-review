@@ -84,6 +84,30 @@ there.
 - [ ] Converter parser changes: tests for valid forms, invalid forms, long inputs and loading.
       ([ossie-converters#239], approved 2026-11-19)
 
+**How maintainers find expander bugs (ost view expander)**
+- Every expander bug reported in November 2026 (#786 to #791) came from christianeu-db and kayemkim
+  asking the rewriter questions in SKILL.md: invented names (#788), parentheses (#789), scope (#787),
+  pass-through `DISTINCT` (#786), one level only (#791), early return (#790).
+- Names in the CTE `joined` come from two sources: grouping keys keep their select item's name
+  (`item.alias_or_name`), and measure columns get `<alias>_<column>` (keys `<alias>_k` on main).
+  The duplicate check covers only the generated names, so `select d.deptno as e_sal, agg(e.sum_sal)`
+  returns deptno sums (30, 100, 180) instead of salaries. (Found 2026-11-23; posted on #795.)
+- Probe recipe: in a scratch worktree of upstream `main`, write a `.ost` with
+  `executeExpand(<query with measures>)` next to `query(<same question on scott.* base tables>)`,
+  run `ost`, and compare the rows. 17 probes on 2026-11-23 (self-joins, `joined`/`spine` aliases,
+  swapped dataset names, quoted aliases, LEFT JOIN empty groups, window functions, `GROUP BY 1`)
+  all matched except the alias clash above.
+- Known "not supported yet" limits in `expander.py`, untracked as issues on purpose: measures
+  through a join of a subquery, plain aggregates in a join, `GROUP BY ALL`/`ROLLUP`/`CUBE`/
+  `GROUPING SETS` in a join, field expressions. Don't open issues for them; umbrella is #707.
+
+**Lessons from our own PRs**
+- Before opening a PR that closes an issue, check the issue for open PRs: #764 overlapped #644
+  (a first-time contributor's earlier PR) and needed a follow-up note. Acknowledge earlier work in
+  the PR description from the start.
+- A compliance case that fails because of a tool bug: fix the tool in its own PR with the case
+  (#809, A13), and keep the other cases in the original PR green (#702, A14).
+
 **How maintainers write reviews here (match it when we review)**
 - Concrete reproduction first: the query or model, actual result, expected result with numbers. ([#769])
 - Mark small points "(minor)"; say what must be fixed before merge and what can be a follow-up issue

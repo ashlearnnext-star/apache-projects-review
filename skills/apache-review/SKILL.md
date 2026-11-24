@@ -166,6 +166,43 @@ When asked "is there any gap or bug in <file>", read the whole file, then check 
   directly under a paragraph turns that paragraph into a heading.
 - **Links and anchors:** relative links resolve, `#anchors` match a heading.
 
+### Hunting for bugs in code that rewrites or generates queries
+
+Expanders, query rewriters, transpilers and code generators break in a few predictable ways. Maintainers
+find most of their bugs by asking the same questions every time. Use them:
+
+1. **Invented names.** List every place the code creates an identifier (CTE names, aliases, helper
+   columns, names joined from parts like `f"{alias}_{column}"`). For each, ask: can two different
+   inputs produce the same name? Can a name the user controls (a column, an `AS` alias, a CTE or view
+   name) equal a generated one? A separator is ambiguous: `a` + `_` + `b_id` equals `a_b` + `_` + `id`.
+   Check that the duplicate check covers every source of names, not only the generated ones.
+2. **Text substitution.** Is an expression pasted in without parentheses (`0 - SUM(a) - SUM(b)`)?
+3. **Scope.** Does a name resolve to the right thing when a CTE, view and table share it?
+4. **Pass-through constructs that change meaning.** `DISTINCT`, `GROUP BY ALL`, `SELECT * REPLACE`,
+   an aggregated subquery: does the rewriter pass a value through that the construct changes?
+5. **Depth.** Does it handle one level only (a view of a view, a CTE that reads a CTE)? Check the
+   traversal order: a reversed breadth-first walk processes sibling CTEs in the wrong order.
+6. **Early returns.** Does a shortcut path skip a step (a dataset with no metrics returning before it
+   is replaced)?
+
+Test each suspicion by **differential testing**: run the query through the code under test and run
+the equivalent plain query whose answer you know, then compare row by row. Choose data where the
+wrong choice gives an obviously wrong number (values that differ by orders of magnitude, an orphan
+row in a LEFT JOIN, a value shared across groups so double counting shows). A clean
+"not supported yet" error is the tool working as designed; a confident wrong number is the bug.
+
+### What to raise, and where
+
+- A wrong answer on current `main` is worth reporting. Before filing an issue, check whether an open
+  PR is rewriting that code: if so, post the repro there as an extra test case the fix must cover,
+  so you don't trigger a competing fix.
+- A deliberate "not supported yet" limit that nobody has asked for is not worth a standalone issue.
+  Keep the repro; mention it on the project's umbrella issue when it becomes relevant, or when the
+  user offers to implement it.
+- Skip a review that would add nothing: a maintainer already found the blocking problem, or the PR
+  is a spec-only change that does what it says and is under discussion elsewhere. Tell the user
+  why in one line and move on.
+
 ## 3. Check for duplicates and overlapping work before proposing anything new
 
 Before filing an issue, suggesting a design change, claiming a gap is unaddressed, **or starting
@@ -307,6 +344,10 @@ it before suggesting comments:
 4. **What's new**: what you found beyond the issue and existing PRs, with the same kind of example.
 
 Then give the suggested comment or next steps.
+
+If the user says they don't follow, start again with an everyday analogy and no code or internal
+names (for example, columns with name tags, where two columns end up with the same tag), then one
+concrete example with real names, and only then the technical term. Short paragraphs, one idea each.
 
 ## 6. Human approval, always
 
