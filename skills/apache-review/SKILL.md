@@ -355,6 +355,12 @@ concrete example with real names, and only then the technical term. Short paragr
 
 ## 6. Human approval, always
 
+- **Humanizer gate.** Before asking the user to approve any text that will be posted or pushed
+  (comment, review, issue, PR title and description, commit message body), invoke the `humanizer`
+  skill on it in embedded mode (step 5a). This includes PR descriptions written at the end of a fix
+  in step 4, which are the easiest to forget. Start the approval request with one line:
+  "Humanizer: applied" plus what it changed, or "Humanizer: not available". Never show a draft for
+  approval without that line. If the text changes after the humanizer ran, run it again.
 - Draft the comment, issue, or code change and show it to the user first.
 - Never run `gh pr comment`, `gh issue create`, `gh pr review`, or push/merge anything without the
   user explicitly confirming the exact text/diff you showed them.
