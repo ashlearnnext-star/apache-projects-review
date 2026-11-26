@@ -124,6 +124,12 @@ there.
   the PR description from the start.
 - A compliance case that fails because of a tool bug: fix the tool in its own PR with the case
   (#809, A13), and keep the other cases in the original PR green (#702, A14).
+- Any push to a PR branch dismisses existing approvals and puts fork CI back to "action required".
+  Update a branch only when GitHub shows a conflict or a maintainer asks. #753 lost jbonofre's
+  approval this way (24 Nov 2026).
+- Don't keep two open PRs on the same file: #764 and #753 both edited
+  `core-spec/expression_language.md`, so each merge forced a conflict fix on the other. Combine
+  them, or start the second after the first merges.
 
 **How maintainers write reviews here (match it when we review)**
 - Concrete reproduction first: the query or model, actual result, expected result with numbers. ([#769])
