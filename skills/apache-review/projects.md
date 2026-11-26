@@ -180,6 +180,25 @@ there.
 - **Review norms:** comments without `nit`, `minor`, or `not a blocker` expect a reply before
   merge. Allow about two working days for first reviews.
 
+**Update 2026-11-25** (second project after Ossie; chosen because Polaris, the Ossie
+`polaris` converter and Paper C share the open-lakehouse-metadata theme):
+- **Re-read the AI policy before the first PR.** `CONTRIBUTING.md` ("Disclosing AI usage") now
+  says a PR that disclosed AI help keeps the AI disclosure trailers at the end of the final
+  commit message, one per tool and model. That conflicts with the `AGENTS.md` line above (no
+  AI tool names in commit messages). Read both in full and follow the newer rule.
+- **Conflicts:** `CONTRIBUTING.md` asks contributors to rebase on `main` to fix conflicts (unlike
+  Ossie, where we merge main). Commits are squashed, so the single commit message must read well
+  on its own.
+- **Activity:** about 164 human-authored PRs merged in the 30 days to 25 Nov 2026 (many more
+  merges are renovate-bot dependency updates, so don't count those). jbonofre is active here too.
+- **Local setup:** needs a JDK 21; this Mac has no Java yet (RAT for ossie-converters also needs it).
+- **Open good first issues (25 Nov 2026, check linked PRs before picking):**
+  - #6090 Polaris resolves its own AWS credentials again for each storage operation (code,
+    filed 13 Nov 2026, 2 comments, unassigned)
+  - #1325 Document how Polaris works with S3, Azure Blob Storage and GCS (docs, 11 comments)
+  - #2774 Move blogs to a separate branch (site, 20 comments)
+  - #1323 Publish the Helm README (assigned to MonkeyCanCode: skip)
+
 ---
 
 ## Apache Gluten — `apache/gluten`
